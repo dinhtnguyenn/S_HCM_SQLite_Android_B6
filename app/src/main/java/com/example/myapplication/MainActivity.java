@@ -8,7 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.myapplication.adapter.StudentAdapter;
 import com.example.myapplication.model.Student;
@@ -17,6 +21,9 @@ import com.example.myapplication.others.DBManager;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Button btnChange;
+    private ArrayList<Student> alStudents;
 
     private RecyclerView rclStudentList;
     private StudentAdapter studentAdapter;
@@ -27,17 +34,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         rclStudentList = findViewById(R.id.rclStudentList);
-
-        //data mẫu
-        //        for (int i = 1; i <= 50; i++) {
-//            alStudents.add(new Student(i, "Student " + i, "Address " + i, "098xxx"));
-//        }
+        btnChange = findViewById(R.id.btnChange);
 
         DBManager dbManager = new DBManager(this);
 //        for (int i = 1; i <= 50; i++) {
 //            dbManager.insertStudent(new Student(i, "Student " + i, "Address " + i, "098xxx"));
 //        }
-        ArrayList<Student> alStudents = new ArrayList<>(dbManager.getAllStudent());
+        alStudents = new ArrayList<>(dbManager.getAllStudent());
 
         //thiết lập để cuộn mượt hơn
         rclStudentList.setHasFixedSize(true);
@@ -54,21 +57,32 @@ public class MainActivity extends AppCompatActivity {
         rclStudentList.setLayoutManager(linearLayoutManager);
         rclStudentList.setAdapter(studentAdapter);
 
+        btnChange.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onClick(View v) {
 
-//=========================GRID==========================================
-        //2: Số cột nếu thiết lập lưới đứng, số dòng nếu lưới ngang
-//        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-//
-//        //GridLayoutManager.VERTICAL: lưới dọc | GridLayoutManager.HORIZONTAL: lưới ngang
-//        gridLayoutManager.setOrientation(GridLayoutManager.HORIZONTAL);
-//        rclStudentList.setLayoutManager(gridLayoutManager);
-//        rclStudentList.setAdapter(studentAdapter);
+                //thay đổi thông tin SV 2
+//                Student student = new Student(2, "Tên mới 3",
+//                                            "Address 2", "123xxxx");
+//                dbManager.updateStudent(student);
 
-//==================STAGGER GRID==========================================
-//        StaggeredGridLayoutManager gridLayoutManager =
-//                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-//        rclStudentList.setLayoutManager(gridLayoutManager);
-//        rclStudentList.setAdapter(studentAdapter);
+                //thêm mới 1 SV
+//                Student student = new Student(100, "SV thêm",
+//                        "Address 2", "123xxxx");
+//                dbManager.insertStudent(student);
+
+                //Xóa 1 SV
+                dbManager.deleteStudentByID(100);
+
+                alStudents.clear();
+                alStudents.addAll(dbManager.getAllStudent());
+
+                studentAdapter.notifyDataSetChanged();
+
+                Toast.makeText(MainActivity.this, "Đã thay đổi", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }
